@@ -3,6 +3,7 @@
 Example android application written in Kotlin integrating Google Calendar API.
 
 **Features**
+
 Get upcoming Calendar events and show information on Logcat.
 
 Forked from the GetEventCalendar repository

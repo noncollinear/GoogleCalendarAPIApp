@@ -44,8 +44,8 @@ class GetEventFragment : Fragment() {
     private val binding get() = _binding!!
 
 
-    private var mCredential: GoogleAccountCredential? = null //hesabımıza erişim için
-    private var mService: Calendar? = null //Takvime erişim için
+    private var mCredential: GoogleAccountCredential? = null //To access our account
+    private var mService: Calendar? = null //To access the calendar
 
     var mProgress: ProgressDialog? = null
 
@@ -178,14 +178,14 @@ class GetEventFragment : Fragment() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    //Google consolea erişim izni olup olmadıgına bakıyoruz
+    //I check if there is Google console access permission.
     private fun isGooglePlayServicesAvailable(): Boolean {
         val apiAvailability = GoogleApiAvailability.getInstance()
         val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(requireContext())
         return connectionStatusCode == ConnectionResult.SUCCESS
     }
 
-    //Cihazın Google play servislerini destekleyip desteklemediğini kontrol ediyor
+    //Checks whether the device supports Google play services
     private fun acquireGooglePlayServices() {
         val apiAvailability = GoogleApiAvailability.getInstance()
         val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(requireContext())
@@ -230,7 +230,7 @@ class GetEventFragment : Fragment() {
             onPostExecute = { output ->
                 mProgress!!.hide()
                 if (output == null || output.size == 0) {
-                    Log.d("Google", "veri yok")
+                    Log.d("Google", "no data")
                 } else {
                     for (index in 0 until output.size) {
                         binding.txtOut.text = (TextUtils.join("\n", output))
@@ -255,8 +255,7 @@ class GetEventFragment : Fragment() {
                             REQUEST_AUTHORIZATION
                         )
                     } else {
-                        binding.txtOut.text =
-                            "The following error occurred:\n" + mLastError!!.message
+                        binding.txtOut.text = "The following error occurred:\n" + mLastError!!.message
                     }
                 } else {
                     binding.txtOut.text = "Request cancelled."

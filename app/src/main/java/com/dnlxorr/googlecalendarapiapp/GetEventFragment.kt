@@ -294,6 +294,9 @@ class GetEventFragment : Fragment() {
 
         } catch (e: IOException) {
             Log.d("Google", e.message.toString())
+            if (e is UserRecoverableAuthIOException) {
+                this.startActivityForResult(e.intent, REQUEST_AUTHORIZATION)
+            }
         }
         return eventStrings
     }

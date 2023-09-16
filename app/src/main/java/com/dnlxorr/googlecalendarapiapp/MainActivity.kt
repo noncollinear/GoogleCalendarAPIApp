@@ -1,4 +1,4 @@
-package com.ekocer.geteventcalendar
+package com.dnlxorr.googlecalendarapiapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

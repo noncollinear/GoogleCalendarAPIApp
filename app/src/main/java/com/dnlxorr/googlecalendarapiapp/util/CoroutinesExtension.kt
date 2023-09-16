@@ -1,4 +1,4 @@
-package com.ekocer.geteventcalendar.util
+package com.dnlxorr.googlecalendarapiapp.util
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

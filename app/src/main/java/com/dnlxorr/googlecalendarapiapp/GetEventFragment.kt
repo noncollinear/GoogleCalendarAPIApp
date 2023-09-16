@@ -1,4 +1,4 @@
-package com.ekocer.geteventcalendar
+package com.dnlxorr.googlecalendarapiapp
 
 import android.Manifest
 import android.accounts.AccountManager
@@ -15,14 +15,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.ekocer.geteventcalendar.databinding.FragmentGetEventBinding
-import com.ekocer.geteventcalendar.model.GetEventModel
-import com.ekocer.geteventcalendar.util.Constants.PREF_ACCOUNT_NAME
-import com.ekocer.geteventcalendar.util.Constants.REQUEST_ACCOUNT_PICKER
-import com.ekocer.geteventcalendar.util.Constants.REQUEST_AUTHORIZATION
-import com.ekocer.geteventcalendar.util.Constants.REQUEST_GOOGLE_PLAY_SERVICES
-import com.ekocer.geteventcalendar.util.Constants.REQUEST_PERMISSION_GET_ACCOUNTS
-import com.ekocer.geteventcalendar.util.executeAsyncTask
+import com.dnlxorr.googlecalendarapiapp.databinding.FragmentGetEventBinding
+import com.dnlxorr.googlecalendarapiapp.model.GetEventModel
+import com.dnlxorr.googlecalendarapiapp.util.Constants.PREF_ACCOUNT_NAME
+import com.dnlxorr.googlecalendarapiapp.util.Constants.REQUEST_ACCOUNT_PICKER
+import com.dnlxorr.googlecalendarapiapp.util.Constants.REQUEST_AUTHORIZATION
+import com.dnlxorr.googlecalendarapiapp.util.Constants.REQUEST_GOOGLE_PLAY_SERVICES
+import com.dnlxorr.googlecalendarapiapp.util.Constants.REQUEST_PERMISSION_GET_ACCOUNTS
+import com.dnlxorr.googlecalendarapiapp.util.executeAsyncTask
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.extensions.android.http.AndroidHttp

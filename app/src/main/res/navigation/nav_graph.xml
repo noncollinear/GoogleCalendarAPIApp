@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/getEventFragment"
-        android:name="com.ekocer.geteventcalendar.GetEventFragment"
+        android:name="com.dnlxorr.googlecalendarapiapp.GetEventFragment"
         android:label="fragment_get_event"
         tools:layout="@layout/fragment_get_event" />
 </navigation>

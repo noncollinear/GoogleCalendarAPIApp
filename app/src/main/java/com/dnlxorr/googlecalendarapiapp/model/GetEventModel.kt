@@ -1,4 +1,4 @@
-package com.ekocer.geteventcalendar.model
+package com.dnlxorr.googlecalendarapiapp.model
 
 data class GetEventModel(
     var id: Int = 0,

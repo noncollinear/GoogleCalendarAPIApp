@@ -1,4 +1,4 @@
-package com.ekocer.geteventcalendar
+package com.dnlxorr.googlecalendarapiapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

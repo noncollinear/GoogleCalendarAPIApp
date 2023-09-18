@@ -1,4 +1,4 @@
-package com.dnlxorr.googlecalendarapiapp
+package com.dnlxorr.calendarexample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

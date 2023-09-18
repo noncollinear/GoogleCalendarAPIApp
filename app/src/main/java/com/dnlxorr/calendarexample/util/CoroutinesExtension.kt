@@ -1,4 +1,4 @@
-package com.dnlxorr.googlecalendarapiapp.util
+package com.dnlxorr.calendarexample.util
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

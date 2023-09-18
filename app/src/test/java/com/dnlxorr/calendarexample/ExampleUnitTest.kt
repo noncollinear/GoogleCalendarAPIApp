@@ -1,4 +1,4 @@
-package com.dnlxorr.googlecalendarapiapp
+package com.dnlxorr.calendarexample
 
 import org.junit.Test
 

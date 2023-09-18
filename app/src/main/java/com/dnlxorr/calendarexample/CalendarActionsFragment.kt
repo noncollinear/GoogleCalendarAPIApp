@@ -15,14 +15,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.dnlxorr.calendarexample.model.GetEventModel
+import com.dnlxorr.calendarexample.databinding.FragmentCalendarActionsBinding
+import com.dnlxorr.calendarexample.model.EventModel
 import com.dnlxorr.calendarexample.util.Constants.PREF_ACCOUNT_NAME
 import com.dnlxorr.calendarexample.util.Constants.REQUEST_ACCOUNT_PICKER
 import com.dnlxorr.calendarexample.util.Constants.REQUEST_AUTHORIZATION
 import com.dnlxorr.calendarexample.util.Constants.REQUEST_GOOGLE_PLAY_SERVICES
 import com.dnlxorr.calendarexample.util.Constants.REQUEST_PERMISSION_GET_ACCOUNTS
 import com.dnlxorr.calendarexample.util.executeAsyncTask
-import com.dnlxorr.calendarexample.databinding.FragmentGetEventBinding
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.extensions.android.http.AndroidHttp
@@ -34,13 +34,18 @@ import com.google.api.client.util.DateTime
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
+import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.EventAttendee
+import com.google.api.services.calendar.model.EventDateTime
 import kotlinx.coroutines.cancel
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
+import java.util.Arrays
 
-class GetEventFragment : Fragment() {
 
-    private var _binding: FragmentGetEventBinding? = null
+class CalendarActionsFragment : Fragment() {
+
+    private var _binding: FragmentCalendarActionsBinding? = null
     private val binding get() = _binding!!
 
 
@@ -60,7 +65,7 @@ class GetEventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentGetEventBinding.inflate(inflater, container, false)
+        _binding = FragmentCalendarActionsBinding.inflate(inflater, container, false)
 
         initView()
 
@@ -101,11 +106,23 @@ class GetEventFragment : Fragment() {
         mProgress!!.setMessage("Loading...")
 
         with(binding) {
-            btnCalendar.setOnClickListener {
-                btnCalendar.isEnabled = false
+            btnGetCalendars.setOnClickListener {
+                btnInsertCalendar.isEnabled = false
+                btnGetCalendars.isEnabled = false
                 txtOut.text = ""
                 getResultsFromApi()
-                btnCalendar.isEnabled = true
+                btnGetCalendars.isEnabled = true
+                btnInsertCalendar.isEnabled = true
+
+            }
+
+            btnInsertCalendar.setOnClickListener {
+                btnGetCalendars.isEnabled = false
+                btnInsertCalendar.isEnabled = false
+                txtOut.text = ""
+                makeInsertionTask()
+                btnGetCalendars.isEnabled = true
+                btnInsertCalendar.isEnabled = true
             }
         }
     }
@@ -125,7 +142,7 @@ class GetEventFragment : Fragment() {
         mService = Calendar.Builder(
             transport, jsonFactory, credential
         )
-            .setApplicationName("GetEventCalendar")
+            .setApplicationName("CalendarExample")
             .build()
     }
 
@@ -264,9 +281,9 @@ class GetEventFragment : Fragment() {
         )
     }
 
-    fun getDataFromCalendar(): MutableList<GetEventModel> {
+    fun getDataFromCalendar(): MutableList<EventModel> {
         val now = DateTime(System.currentTimeMillis())
-        val eventStrings = ArrayList<GetEventModel>()
+        val eventStrings = ArrayList<EventModel>()
         try {
             val events = mService!!.events().list("primary")
                 .setMaxResults(10)
@@ -283,7 +300,7 @@ class GetEventFragment : Fragment() {
                 }
 
                 eventStrings.add(
-                    GetEventModel(
+                    EventModel(
                         summary = event.summary,
                         startDate = start.toString()
                     )
@@ -298,5 +315,117 @@ class GetEventFragment : Fragment() {
             }
         }
         return eventStrings
+    }
+
+    private fun makeInsertionTask() {
+        var mLastError: Exception? = null
+
+        lifecycleScope.executeAsyncTask(
+            onStart = {
+                mProgress!!.show()
+            },
+            doInBackground = {
+                try {
+                    insertEventOnCalendar("Evento insertado",DateTime(System.currentTimeMillis()),DateTime(System.currentTimeMillis()+3600000))
+                } catch (e: Exception) {
+                    mLastError = e
+                    lifecycleScope.cancel()
+                    null
+                }
+            },
+            onPostExecute = { output ->
+                mProgress!!.hide()
+                if (output == null) {
+                    Log.d("Google", "Failed inserting event")
+                } else {
+                        binding.txtOut.text = (output.summary)
+                        Log.d(
+                            "Google",
+                            output.id.toString() + " " + output.summary + " " + output.start
+                        )
+                    }
+            },
+            onCancelled = {
+                mProgress!!.hide()
+                if (mLastError != null) {
+                    if (mLastError is GooglePlayServicesAvailabilityIOException) {
+                        showGooglePlayServicesAvailabilityErrorDialog(
+                            (mLastError as GooglePlayServicesAvailabilityIOException)
+                                .connectionStatusCode
+                        )
+                    } else if (mLastError is UserRecoverableAuthIOException) {
+                        this.startActivityForResult(
+                            (mLastError as UserRecoverableAuthIOException).intent,
+                            REQUEST_AUTHORIZATION
+                        )
+                    } else {
+                        binding.txtOut.text = "The following error occurred:\n" + mLastError!!.message
+                    }
+                } else {
+                    binding.txtOut.text = "Request cancelled."
+                }
+            }
+        )
+    }
+
+    fun insertEventOnCalendar(eventSummary:String, startDate: DateTime, endDate:DateTime): Event? {
+// Create a new calendar
+        // Create a new calendar
+//        val calendar: com.google.api.services.calendar.model.Calendar = com.google.api.services.calendar.model.Calendar()
+//        calendar.summary = eventSummary
+//        calendar.timeZone = "America/Los_Angeles"
+////        calendar.set(Calendar.)
+//
+//// Insert the new calendar
+//
+//// Insert the new calendar
+//        val createdCalendar: com.google.api.services.calendar.model.Calendar? = mService!!.calendars().insert(calendar).execute()
+//
+//        if (createdCalendar != null) {
+//            System.out.println(createdCalendar.getId())
+//        }
+//
+//        return (createdCalendar as EventModel)
+
+// Using event
+        var event = Event()
+            .setSummary(eventSummary)
+            .setLocation("800 Howard St., San Francisco, CA 94103")
+            .setDescription("A chance to hear more about Google's developer products.")
+
+//        val startDateTime = DateTime("2015-05-28T09:00:00-07:00")
+        val start = EventDateTime()
+            .setDateTime(startDate)
+            .setTimeZone("America/Los_Angeles")
+        event.setStart(start)
+
+//        val endDateTime = DateTime("2015-05-28T17:00:00-07:00")
+        val end = EventDateTime()
+            .setDateTime(endDate)
+            .setTimeZone("America/Los_Angeles")
+        event.setEnd(end)
+
+//        val recurrence = arrayOf("RRULE:FREQ=DAILY;COUNT=2")
+//        event.setRecurrence(Arrays.asList(*recurrence))
+
+        val attendees = arrayOf(
+            EventAttendee().setEmail("daielt@example.com"),
+            EventAttendee().setEmail("edmanuelt@example.com")
+        )
+        event.setAttendees(Arrays.asList(*attendees))
+
+//        val reminderOverrides = arrayOf(
+//            EventReminder().setMethod("email").setMinutes(24 * 60),
+//            EventReminder().setMethod("popup").setMinutes(10)
+//        )
+//        val reminders: Event.Reminders = Reminders()
+//            .setUseDefault(false)
+//            .setOverrides(Arrays.asList(*reminderOverrides))
+//        event.setReminders(reminders)
+
+        val calendarId = "primary"
+        event = mService!!.events().insert(calendarId, event).execute()
+        System.out.printf("Event created: %s\n", event.getHtmlLink())
+        return event
     }
 }

@@ -409,7 +409,7 @@ class CalendarActionsFragment : Fragment() {
 //        event.setRecurrence(Arrays.asList(*recurrence))
 
         val attendees = arrayOf(
-            EventAttendee().setEmail("daielt@example.com"),
+            EventAttendee().setEmail("danielt@example.com"),
             EventAttendee().setEmail("edmanuelt@example.com")
         )
         event.setAttendees(Arrays.asList(*attendees))
